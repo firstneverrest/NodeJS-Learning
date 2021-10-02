@@ -75,3 +75,83 @@ console.log(os.platform(), os.homedir());
 ## File system
 
 One of the built-in modules which is highly important.
+
+- fs.readFile('FILE_NAME', callback) - read a file (asynchronous running)
+- fs,writeFile('FILE_NAME', 'MESSAGE', callback) - write a file (asynchronous running)
+- fs,appendFile('FILE_NAME', 'MESSAGE', callback) - append a file (asynchronous running)
+- fs.unlink('FILE_NAME', callback) - delete a file
+- fs.rename('OLD_FILE_NAME', 'NEW_FILE_NAME', callback) - rename a file
+- fs.existsSync('FILE_NAME') - return true if the file or directory is existed
+- fs.mkdir('FOLDER_NAME', callback) - create a folder
+- fs.rmdir('FOLDER_NAME', callback) - delete a folder
+
+```js
+// file.js
+const fs = require('fs');
+
+// reading file
+fs.readFile('post.txt', (err, data) => {
+  if (err) {
+    console.log(err);
+  }
+  console.log(data); // show buffer
+  console.log(data.toString()); // show actual text
+});
+
+// writing file
+fs.writeFile(
+  './post.txt',
+  'The shadow has covered the old town for a long time.',
+  () => {
+    console.log('File was written');
+  }
+);
+
+// directories
+if (!fs.existsSync('./assets')) {
+  fs.mkdir('./assets', (err) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log('Folder was created');
+  });
+} else {
+  fs.rmdir('./assets', (err) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log('Folder was deleted');
+  });
+}
+```
+
+## Streams and Buffer
+
+If the data are extremely huge, reading files could be very long time. Therefore, Streams and Buffer come to solve this problem. The concept is start using data, before it has finished loading.
+
+- Streams is like a path that deliver some data to the destination
+- Buffers is a temporary memory that a stream takes to hold some data. When the buffers is full, the data will be sent to the destination.
+
+```js
+const fs = require('fs');
+
+const readStream = fs.createReadStream('./lorem.txt', { encoding: 'utf-8' });
+const writeStream = fs.createWriteStream('./new_lorem.txt');
+
+// similar to event listener
+readStream.on('data', (chunk) => {
+  console.log('------- NEW CHUNK -------');
+  console.log(chunk);
+  writeStream.write('\nWriteStream\n');
+  writeStream.write(chunk);
+});
+```
+
+### Piping
+
+Piping in a readable stream is used to attach a writable stream to readable stream. Whatever it read from readStream, it will write that in a file. You can use in case of read one file to write in other file.
+
+```js
+// piping
+readStream.pipe(writeStream);
+```
