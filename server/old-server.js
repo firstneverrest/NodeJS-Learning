@@ -36,5 +36,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(4000, 'localhost', () => {
-  console.log('listening on port 4000');
+  console.log('Listening on port 4000');
 });
