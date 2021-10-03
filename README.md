@@ -155,3 +155,161 @@ Piping in a readable stream is used to attach a writable stream to readable stre
 // piping
 readStream.pipe(writeStream);
 ```
+
+## Clients & Servers
+
+### Creating a server
+
+Import http built-in module and use `http.createServer()` to create server. Then, you can access request and response object (req, res).
+
+```js
+// server.js
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  console.log(req.url, req.method); // print / GET
+
+  res.setHeader('Content-Type', 'text/plain');
+
+  res.write('Greetings!'); // show text on screen
+  res.end();
+});
+
+server.listen(4000, 'localhost', () => {
+  console.log('listening on port 4000');
+});
+```
+
+### Request object
+
+Get access to request from client side.
+
+- req.url - get url that client access
+- req.method - get REST method that sended from client
+
+### Response object
+
+Config response object before send response to the client.
+
+- res.setHeader() - config response header such as you want to send html to the client, you can use `res.setHeader('Content-Type', 'text/html')` and then res.write('<p>Greetings!</p>).
+- res.write() - write text on screen
+- res.end() - end response
+
+### Return HTML Page
+
+```js
+const http = require('http');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+
+  fs.readFile('./index.html', (err, data) => {
+    if (err) {
+      console.log(err);
+      res.end();
+    } else {
+      res.write(data);
+      res.end();
+      // or
+      // res.end(data)
+    }
+  });
+});
+
+server.listen(4000, 'localhost', () => {
+  console.log('listening on port 4000');
+});
+```
+
+### Routing
+
+Use switch case to create routes and get `req.url` to get path that user went.
+
+```js
+const http = require('http');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+
+  let path = './';
+  switch (req.url) {
+    case '/':
+      path += 'index.html';
+      break;
+    case '/about':
+      path += 'about.html';
+      break;
+    default:
+      path += '404.html';
+      break;
+  }
+
+  fs.readFile(path, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.end();
+    } else {
+      res.write(data);
+      res.end();
+    }
+  });
+});
+
+server.listen(4000, 'localhost', () => {
+  console.log('listening on port 4000');
+});
+```
+
+### Status Codes
+
+Status codes describe the type of response sent to the browser such as 200 OK, 201 Created, 404 Not Found, etc.
+
+```js
+let path = './';
+switch (req.url) {
+  case '/':
+    path += 'index.html';
+    res.statusCode = 200;
+    break;
+  case '/about':
+    path += 'about.html';
+    res.statusCode = 200;
+    break;
+  default:
+    path += '404.html';
+    res.statusCode = 404;
+    break;
+}
+```
+
+### Redirect
+
+Use `res.setHeader('Location, 'path')` to redirect user. Status code 301 (move permanently) can be sent when redirect user.
+
+```js
+let path = './';
+switch (req.url) {
+  case '/':
+    path += 'index.html';
+    res.statusCode = 200;
+    break;
+  case '/about':
+    path += 'about.html';
+    res.statusCode = 200;
+    break;
+  case '/about-me':
+    res.statusCode = 301;
+    res.setHeader('Location', '/about');
+    res.end();
+  default:
+    path += '404.html';
+    res.statusCode = 404;
+    break;
+}
+```
+
+## Express
+
+Express is a node.js web application framework that provides cleaner code and easier to write.
