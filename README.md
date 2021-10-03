@@ -312,7 +312,7 @@ switch (req.url) {
 
 ## Express
 
-Express is a node.js web application framework that provides elegant code and easier to write.
+Express is a node.js web application framework that provides elegant code and easier to write. [Visit official website to get more information](https://ejs.co/).
 
 ```js
 // app.js
@@ -342,3 +342,165 @@ app.listen(4000, () => {
 ```
 
 Express provides many benefits as you can see the code above: no need to config res.header to tell the response you send is html, plain text, etc.
+
+## Template Engine
+
+Template engine enables you to use static template files in your application. It replaces variables in a template file with actual values, and transforms the template into an HTML file sent to the client at run time.
+
+### EJS (Embedded JavaScript Templating)
+
+Generate HTML markup with plain JavaScript
+
+1. Install EJS via npm
+
+```
+npm i ejs
+```
+
+2. Let express now that you use ejs
+
+```js
+const express = require('express');
+
+const app = express();
+
+// register template engine
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
+app.get('/about-me', (req, res) => {
+  res.redirect('about');
+});
+
+app.use((req, res) => {
+  res.status(404).render('404');
+});
+
+app.listen(4000, () => {
+  console.log('listening on port 4000');
+});
+```
+
+3. Create views folder and create file with `.ejs` extension.
+
+```html
+<!-- index.ejs -->
+<body>
+  <% const name = 'Jane'%>
+  <section>
+    <h1><%= name %> Computer Spec</h1>
+    <p>Name: Asus Tuff Gaming DT</p>
+    <p>Display: 15.6 inches</p>
+    <p>Ram: DDR4 8 GB</p>
+    <p>Disk: SSD 512 GB</p>
+  </section>
+  <a href="/about">Go to about page</a>
+</body>
+```
+
+- `<% %>` - no input tag use to write JS code like initial variable
+- `<%= %>` - output HTML value
+- `<%# %>` - comment
+- `<%- %>` - output unescaped characters or HTML element using in partial
+
+#### Passing data into views
+
+```js
+// app.js
+const express = require('express');
+const specs = require('./data.json').specs;
+
+const app = express();
+
+// register template engine
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Home', specs });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', { title: 'About' });
+});
+
+app.get('/about-me', (req, res) => {
+  res.redirect('about');
+});
+
+app.use((req, res) => {
+  res.status(404).render('404', { title: '404' });
+});
+
+app.listen(4000, () => {
+  console.log('listening on port 4000');
+});
+```
+
+```html
+<!-- index.ejs -->
+<body>
+  <% const name = 'Jane'%>
+  <section>
+    <h1><%= name %> Computer Spec</h1>
+    <% if (specs.length > 0) { %> <% specs.forEach(spec => { %>
+    <p>Name: <%= spec.name %></p>
+    <p>Display: <%= spec.display %></p>
+    <p>Ram: <%= spec.ram %></p>
+    <p>Disk: <%= spec.disk %></p>
+    <hr />
+    <% }) %> <% } else { %>
+    <p>No <%= name %>'s computer spec to display</p>
+    <% } %>
+  </section>
+  <a href="/about">Go to about page</a>
+</body>
+```
+
+#### Partial
+
+Create template and store in .ejs file like a component and use `<%- include('path') %>` to include that template in main .ejs file.
+
+```html
+<!-- head.ejs -->
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Computer Spec | <%= title %></title>
+</head>
+```
+
+```html
+<!-- spec.ejs -->
+<section>
+  <h1>My Computer Spec</h1>
+  <% if (specs.length > 0) { %> <% specs.forEach(spec => { %>
+  <p>Name: <%= spec.name %></p>
+  <p>Display: <%= spec.display %></p>
+  <p>Ram: <%= spec.ram %></p>
+  <p>Disk: <%= spec.disk %></p>
+  <hr />
+  <% }) %> <% } else { %>
+  <p>No <%= name %>'s computer spec to display</p>
+  <% } %>
+</section>
+```
+
+```html
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./partials/head.ejs') %>
+  <body>
+    <%- include('./partials/spec.ejs') %>
+    <a href="/about">Go to about page</a>
+  </body>
+</html>
+```
