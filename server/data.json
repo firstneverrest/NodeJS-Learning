@@ -1,0 +1,22 @@
+{
+  "specs": [
+    {
+      "name": "HP OMEN 16",
+      "display": "16.1 inches",
+      "ram": "8 GB",
+      "disk": "SSD 512 GB"
+    },
+    {
+      "name": "Lenovo Legion 5",
+      "display": "16.1 inches",
+      "ram": "8 GB",
+      "disk": "SSD 512 GB"
+    },
+    {
+      "name": "ASUS Tuff Gaming",
+      "display": "15.6 inches",
+      "ram": "8 GB",
+      "disk": "SSD 512 GB"
+    }
+  ]
+}
