@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-learning",
+  "version": "1.0.0",
+  "description": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It enable JavaScript to run outside the browser. [Visit official website for more information](https://nodejs.org/en/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firstneverrest/NodeJS-Learning.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/firstneverrest/NodeJS-Learning/issues"
+  },
+  "homepage": "https://github.com/firstneverrest/NodeJS-Learning#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
