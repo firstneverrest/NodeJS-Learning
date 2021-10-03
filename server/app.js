@@ -1,21 +1,25 @@
 const express = require('express');
+const specs = require('./data.json').specs;
 
 const app = express();
 
+// register template engine
+app.set('view engine', 'ejs');
+
 app.get('/', (req, res) => {
-  res.sendFile('./index.html', { root: __dirname });
+  res.render('index', { title: 'Home', specs });
 });
 
 app.get('/about', (req, res) => {
-  res.sendFile('./about.html', { root: __dirname });
+  res.render('about', { title: 'About' });
 });
 
 app.get('/about-me', (req, res) => {
-  res.redirect('/about');
+  res.redirect('about');
 });
 
 app.use((req, res) => {
-  res.status(404).sendFile('/404.html', { root: __dirname });
+  res.status(404).render('404', { title: '404' });
 });
 
 app.listen(4000, () => {

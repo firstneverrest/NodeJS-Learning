@@ -1,0 +1,12 @@
+<section>
+  <h1>My Computer Spec</h1>
+  <% if (specs.length > 0) { %> <% specs.forEach(spec => { %>
+  <p>Name: <%= spec.name %></p>
+  <p>Display: <%= spec.display %></p>
+  <p>Ram: <%= spec.ram %></p>
+  <p>Disk: <%= spec.disk %></p>
+  <hr />
+  <% }) %> <% } else { %>
+  <p>No <%= name %>'s computer spec to display</p>
+  <% } %>
+</section>
