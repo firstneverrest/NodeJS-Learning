@@ -504,3 +504,51 @@ Create template and store in .ejs file like a component and use `<%- include('pa
   </body>
 </html>
 ```
+
+## Middleware
+
+Middleware is a code which runs between getting a request and sending a response.
+
+- log details of every request
+- authenticate and protected routes
+- parse JSON data from requests
+- return 404 pages
+
+```js
+// app.js
+app.use((req, res, next) => {
+  console.log('new request:');
+  console.log('host: ', req.hostname);
+  console.log('path: ', req.path);
+  console.log('method: ', req.method);
+  next(); // send to the next middleware
+});
+
+app.use((req, res, next) => {
+  console.log('The next middleware');
+});
+```
+
+The order of middleware is important. When you send the request back to the server, other middleware below will not working.
+
+### morgan
+
+morgan is a HTTP request logger middleware for node.js (third-party middleware).
+
+```js
+const morgan = require('morgan');
+
+app.use(morgan('dev'));
+```
+
+### static middleware
+
+By default, node.js not let the user access the file directly on browser. If you want to give client an access, you can use `app.use(express.static('FILE_NAME')`.
+
+```js
+app.use(express.static('public'));
+```
+
+The example above, make every files in public folder can be access. It means you can now import external CSS file into your HTML page.
+
+Now, you can create public/styles.css to add CSS to your .ejs file and you can open this styles.css directly on browser by typing `http://localhost:4000/styles.css`. You could see that the word `public/` is not required.
