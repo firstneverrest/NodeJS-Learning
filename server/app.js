@@ -1,10 +1,14 @@
 const express = require('express');
+const morgan = require('morgan');
 const specs = require('./data.json').specs;
 
 const app = express();
 
 // register template engine
 app.set('view engine', 'ejs');
+
+app.use(express.static('public'));
+app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
   res.render('index', { title: 'Home', specs });
