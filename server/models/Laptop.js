@@ -24,4 +24,4 @@ const LaptopSchema = new Schema(
 );
 
 // find collection
-module.exports = mongoose.model('Laptop', LaptopSchema);
+module.exports = mongoose.model('laptop', LaptopSchema);
