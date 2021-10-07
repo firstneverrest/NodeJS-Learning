@@ -552,3 +552,280 @@ app.use(express.static('public'));
 The example above, make every files in public folder can be access. It means you can now import external CSS file into your HTML page.
 
 Now, you can create public/styles.css to add CSS to your .ejs file and you can open this styles.css directly on browser by typing `http://localhost:4000/styles.css`. You could see that the word `public/` is not required.
+
+## MongoDB
+
+MongoDB is a NoSQL database. To connect MongoDB, you can use Mongoose package and connect to MongoDB Atlas (cloud database).
+
+### Mongoose
+
+Mongoose is an ODM (Object Document Mapping Library). First, you have to create schemas and models.
+
+- Schemas defines the structure of a type of data or document such as name (string), age (number).
+- Models allow you to communicate with database collection.
+
+```js
+const express = require('express');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+const specs = require('./data.json').specs;
+const cors = require('cors');
+require('dotenv').config({ path: './.env' });
+
+const app = express();
+
+// enable cors
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// connect to MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URL);
+mongoose.connection.once('open', () => {
+  console.log('connected to database');
+  app.listen(4000, () => {
+    console.log('listening on port 4000');
+  });
+});
+
+// register template engine
+app.set('view engine', 'ejs');
+
+app.use(express.static('public'));
+app.use(morgan('dev'));
+
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Home', specs });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', { title: 'About' });
+});
+
+app.get('/about-me', (req, res) => {
+  res.redirect('about');
+});
+
+app.use((req, res) => {
+  res.status(404).render('404', { title: '404' });
+});
+```
+
+### Model
+
+```js
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const LaptopSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    display: {
+      type: String,
+      required: false,
+    },
+    ram: {
+      type: String,
+      required: true,
+    },
+    disk: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+// find collection
+module.exports = mongoose.model('Laptop', LaptopSchema);
+```
+
+### Get All Data in Collection
+
+```js
+app.get('/all-specs', (req, res) => {
+  Spec.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Get a Single Data in Collection
+
+```js
+app.get('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findById(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Saving Data in Collection
+
+```js
+// app.js
+const Spec = require('./models/Laptop');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+...
+app.post('/add-spec', (req, res) => {
+  const spec = new Spec(req.body);
+
+  spec
+    .save()
+    .then((result) => {
+      res.send({ message: 'add spec successfully' });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Delete Data in Collection
+
+```js
+app.delete('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndDelete(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Update Data in Collection
+
+```js
+app.put('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndUpdate(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Essential Express Method
+
+1. `app.use(express.urlencoded({ extended: true }));`
+
+   When you need to accept form data, you need to convert from url encoded to object with below command from express (else it will be undefined).
+
+2. `app.use(express.static('<FOLDER_OR_FILE>')`
+   Make that folder or file be public and enable to access from client side.
+
+3. `app.use(express.json()):`
+   Convert JSON String to JSON Object
+
+## Express Router
+
+Separate routes in the projects to be in multiple files which helps all routes in express be more easy to maintain.
+
+```js
+// routes/specRoutes.js
+const express = require('express');
+const Spec = require('../models/laptop');
+
+const router = express.Router();
+
+// get all specs
+router.get('/specs', (req, res) => {
+  Spec.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// add a spec
+router.post('/add-spec', (req, res) => {
+  const spec = new Spec(req.body);
+
+  spec
+    .save()
+    .then((result) => {
+      res.send({ message: 'add spec successfully' });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// get a single spec
+router.get('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findById(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// delete a single spec
+router.delete('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndDelete(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// update a single spec
+router.put('/specs/:id', (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndUpdate(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+module.exports = router;
+```
+
+```js
+// app.js
+const specRoutes = require('./routes/specRoutes');
+...
+app.use(specRoutes);
+// or scope
+app.use('/specs', specRoutes);
+```
+
+## MVC (Model-View-Controller)
+
+MVC is an architectural pattern to structure code and files. It keeps code more modular, reusable and easier to read.
+
+1. Model - data schema & database
+2. View - UI
+3. Controller - interface between Model and View
