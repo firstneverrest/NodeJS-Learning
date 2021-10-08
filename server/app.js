@@ -16,7 +16,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // connect to MongoDB Atlas
-mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(process.env.local.MONGODB_URL);
 mongoose.connection.once('open', () => {
   console.log('connected to database');
   app.listen(4000, () => {
