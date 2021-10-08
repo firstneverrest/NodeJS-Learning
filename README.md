@@ -829,3 +829,97 @@ MVC is an architectural pattern to structure code and files. It keeps code more 
 1. Model - data schema & database
 2. View - UI
 3. Controller - interface between Model and View
+
+```js
+// controllers/specController.js
+const Spec = require('../models/laptop');
+
+const spec_index = (req, res) => {
+  Spec.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const spec_single_detail = (req, res) => {
+  const id = req.params.id;
+  Spec.findById(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const spec_create = (req, res) => {
+  const spec = new Spec(req.body);
+
+  spec
+    .save()
+    .then((result) => {
+      res.send({ message: 'add spec successfully' });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const spec_update = (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndUpdate(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const spec_delete = (req, res) => {
+  const id = req.params.id;
+  Spec.findByIdAndDelete(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports = {
+  spec_index,
+  spec_create,
+  spec_single_detail,
+  spec_update,
+  spec_delete,
+};
+```
+
+```js
+// routes/specRoutes.js
+const express = require('express');
+const specController = require('../controllers/specController');
+
+const router = express.Router();
+
+// get all specs
+router.get('/', specController.spec_index);
+
+// add a spec
+router.post('/add-spec', specController.spec_create);
+
+// get a single spec
+router.get('/:id', specController.spec_single_detail);
+
+// update a single spec
+router.put('/:id', specController.spec_update);
+
+// delete a single spec
+router.delete('/:id', specController.spec_delete);
+
+module.exports = router;
+```
