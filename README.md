@@ -2,6 +2,14 @@
 
 Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It enable JavaScript to run outside the browser. [Visit official website for more information](https://nodejs.org/en/).
 
+## Technologies
+
+![image](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![image](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![image](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![image](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![image](https://img.shields.io/badge/ejs-C71A36?style=for-the-badge&logoColor=white)
+
 ## Global Object
 
 When you try `console.log(global)` via node.js, you could see every functions that you can use in node.js. For example, clearInterval, setTimeout. However, you don't need to refer to global when you use these functions. However, You still cannot access window object.
