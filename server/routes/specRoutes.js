@@ -1,67 +1,21 @@
 const express = require('express');
-const Spec = require('../models/laptop');
+const specController = require('../controllers/specController');
 
 const router = express.Router();
 
 // get all specs
-router.get('/', (req, res) => {
-  Spec.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.get('/', specController.spec_index);
 
 // add a spec
-router.post('/add-spec', (req, res) => {
-  const spec = new Spec(req.body);
-
-  spec
-    .save()
-    .then((result) => {
-      res.send({ message: 'add spec successfully' });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.post('/add-spec', specController.spec_create);
 
 // get a single spec
-router.get('/:id', (req, res) => {
-  const id = req.params.id;
-  Spec.findById(id)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-// delete a single spec
-router.delete('/:id', (req, res) => {
-  const id = req.params.id;
-  Spec.findByIdAndDelete(id)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.get('/:id', specController.spec_single_detail);
 
 // update a single spec
-router.put('/:id', (req, res) => {
-  const id = req.params.id;
-  Spec.findByIdAndUpdate(id)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.put('/:id', specController.spec_update);
+
+// delete a single spec
+router.delete('/:id', specController.spec_delete);
 
 module.exports = router;
