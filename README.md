@@ -931,3 +931,59 @@ router.delete('/:id', specController.spec_delete);
 
 module.exports = router;
 ```
+
+## Connect to mySQL Database
+
+### Installation mysql driver
+
+```
+npm i mysql
+```
+
+### Create Connection to mysql
+
+```js
+const mysql = require('mysql');
+
+// create connection
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'todolist',
+  port: 3307,
+});
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log('MySQL is Connected');
+});
+```
+
+### Create Database
+
+```js
+app.post('/createdb', (req, res) => {
+  const sql = 'CREATE DATABASE shop';
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.send({ error: err }).status(500);
+    }
+    res.send({ message: 'Database is created' }).status(200);
+  });
+});
+```
+
+### Create Table
+
+```js
+app.post('/create/table', (req, res) => {
+  const sql =
+    'CREATE TABLE Book (Id int(4) unsigned, name varchar(200), author varchar(200), price int)';
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.send({ error: err }).status(500);
+    }
+    res.send({ message: 'table is created' }).status(200);
+  });
+});
+```
