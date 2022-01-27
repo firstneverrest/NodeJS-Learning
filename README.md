@@ -987,3 +987,34 @@ app.post('/create/table', (req, res) => {
   });
 });
 ```
+
+## Backend Libraries
+
+### Dependencies
+
+- body-parser - convert request data type
+- cors - manage cors
+- dotenv - enable using .env
+- jsonwebtoken - using JWT
+- swagger - API docs
+- axios
+- compression
+- cookie-parser
+- date-fns
+- exceljs
+- express-validator
+- helmet
+- jest
+- moment-range
+- pg
+- typeorm
+
+### DevDependencies
+
+- nodemon -
+- prettier
+- typescript
+- ts-node
+- supertest
+- husky
+- @types/...
