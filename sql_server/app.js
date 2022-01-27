@@ -39,4 +39,18 @@ app.post('/create/table', (req, res) => {
   });
 });
 
+// insert a row
+app.post('/addbook', (req, res) => {
+  const book = { id: 123, name: 'Wonderful Day', author: 'Carlos', price: 150 };
+  const sql = 'INSERT INTO shop SET ?';
+  db.query(sql, book, (err, result) => {
+    if (err) {
+      res.send({ error: err }).status(500);
+    }
+    res.send({ message: 'Insert a row completed' });
+  });
+});
+
+// get all rows
+
 app.listen(4000, () => console.log('Listening on Port 4000'));
