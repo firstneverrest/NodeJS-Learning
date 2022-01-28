@@ -102,11 +102,45 @@ Each stage performs an operation on the input document.
 - GROUP BY = $group - group document
 - SELECT = $project - show only wanted field in the documents
 - ORDER BY = $sort
-- LIMIT = $limit
+  - 1 = ascending
+  - -1 = descending
+- LIMIT = $limit - limit documents that will be showed
 - JOIN = $lookup
-- $count
+- $count - count documents
+- $skip - skips over the specified number of documents
+- $push - appends a specified value to an array
+- $addToSet - adds a value to an array unless the value is already present, it does nothing to that array.
 
 ```
-# $project - show only object_id, name and age
-db.employees.aggregate([{$project: {name: 1, age: 1}}])
+syntax: db.<COLLECTION_NAME>.aggregate([{STATE}])
+
+collections -> $project -> $match -> $group -> $sort -> results
+
+# $project - show only name and age
+db.employees.aggregate([{$project: {_id:0, name: 1, age: 1}}])
+
+# $match - show only matched condition collections
+db.employees.aggregate([{$match: {salary: {$gte: 30000}}}, {$project: {_id: 0, name: 1, age: 1}}])
+
+# $count
+db.employees.aggregate([{$match: {salary: {$gte: 30000}}}, {$count: "employees amount"}])
+
+# $sort
+db.employees.aggregate([{$match: {salary: {$gte: 30000}}}, {$project: {_id: 0, name: 1, age: 1, salary: 1}}, {$sort: {salary: 1}}])
+
+# $limit
+db.employees.aggregate([{$match: {salary: {$gte: 30000}}}, {$project: {_id: 0, name: 1, age: 1, salary: 1}}, {$limit: 1}])
+
+# $group
+db.employees.aggregate([{$group: {_id: "$department", count: {$sum: 1}}}])
+
+db.employees.aggregate([{$group: {_id: "$department", max_salary: {$max: "$salary"}}}])
+
+db.employees.aggregate([{$group: {_id: null, total: {$sum: "$salary"}}}])
+
+# $push
+db.employees.aggregate([{$group: {_id: "$department", sum: {$sum: "$salary"}, description: {$push: {name: "$name", salary: "$salary"}}}}])
+
+# $addToSet - like push but the values are not duplicated
+db.employees.aggregate([{$group: {_id: "$department", sum: {$sum: "$salary"}, employees: {$addToSet: "$name"}}}])
 ```
